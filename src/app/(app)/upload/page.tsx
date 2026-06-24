@@ -35,7 +35,18 @@ export default function UploadPage() {
       .select("default_org_id")
       .eq("id", user.id)
       .single();
-    if (profile?.default_org_id) setOrgId(profile.default_org_id);
+    if (profile?.default_org_id) {
+      setOrgId(profile.default_org_id);
+      return;
+    }
+    // default_org_id가 없으면 멤버십에서 첫 번째 조직을 가져옴
+    const { data: membership } = await supabase
+      .from("diadent_memberships")
+      .select("org_id")
+      .eq("user_id", user.id)
+      .limit(1)
+      .single();
+    if (membership?.org_id) setOrgId(membership.org_id);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,7 +75,11 @@ export default function UploadPage() {
   }
 
   async function handleAutoUpload() {
-    if (!file || !orgId) return;
+    if (!file) return;
+    if (!orgId) {
+      setError("소속 조직 정보를 불러올 수 없습니다. 페이지를 새로고침하거나 관리자에게 문의하세요.");
+      return;
+    }
     setUploading(true);
     setError("");
 
