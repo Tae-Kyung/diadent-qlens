@@ -15,7 +15,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [signupDone, setSignupDone] = useState(false);
 
   const router = useRouter();
   const supabase = createClient();
@@ -29,12 +28,11 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { emailRedirectTo: `${location.origin}/callback` },
       });
       if (error) {
         setError(error.message);
       } else {
-        setSignupDone(true);
+        router.push("/onboarding");
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({
@@ -59,12 +57,6 @@ export default function LoginPage() {
           <CardDescription>측정 데이터 품질 분석 플랫폼</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {signupDone ? (
-            <p className="text-center text-sm text-muted-foreground">
-              <strong>{email}</strong>로 확인 메일을 보냈습니다. 이메일을 확인해주세요.
-            </p>
-          ) : (
-            <>
               <div className="flex rounded-lg border overflow-hidden">
                 <button
                   type="button"
@@ -115,8 +107,6 @@ export default function LoginPage() {
                 </Button>
               </form>
               {error && <p className="text-sm text-destructive text-center">{error}</p>}
-            </>
-          )}
         </CardContent>
       </Card>
     </div>
