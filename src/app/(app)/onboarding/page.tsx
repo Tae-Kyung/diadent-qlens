@@ -19,31 +19,36 @@ export default function OnboardingPage() {
     setLoading(true);
     setError("");
 
-    const { error: insertError } = await supabase
-      .from("diadent_organizations")
-      .insert({ name: orgName });
-
-    if (insertError) {
-      setError(insertError.message);
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setError("로그인 정보를 불러올 수 없습니다.");
       setLoading(false);
       return;
     }
 
-    // 프로필에 기본 조직 설정
-    const { data: orgs } = await supabase
-      .from("diadent_memberships")
-      .select("org_id")
-      .limit(1)
+    // 1. 조직 생성 (트리거가 자동으로 owner 멤버십 생성)
+    const { data: org, error: insertError } = await supabase
+      .from("diadent_organizations")
+      .insert({ name: orgName })
+      .select("id")
       .single();
 
-    if (orgs) {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase
-          .from("diadent_profiles")
-          .update({ default_org_id: orgs.org_id })
-          .eq("id", user.id);
-      }
+    if (insertError || !org) {
+      setError(insertError?.message || "조직 생성 실패");
+      setLoading(false);
+      return;
+    }
+
+    // 2. 프로필에 기본 조직 설정
+    const { error: profileError } = await supabase
+      .from("diadent_profiles")
+      .update({ default_org_id: org.id })
+      .eq("id", user.id);
+
+    if (profileError) {
+      // 프로필이 아직 없으면 (트리거 지연 등) 에러 로그만 남김
+      // 업로드 페이지에서 멤버십 fallback으로 orgId를 가져올 수 있음
+      console.error("프로필 업데이트 실패:", profileError.message);
     }
 
     router.push("/dashboard");
