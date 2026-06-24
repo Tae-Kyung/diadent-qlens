@@ -128,3 +128,9 @@
     @apply font-sans;
   }
 }
+
+/* PDF 캡처 시 배경을 흰색으로 강제 */
+.pdf-capture {
+  background: #ffffff !important;
+  color: #000000 !important;
+}

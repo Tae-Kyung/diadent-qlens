@@ -9,9 +9,10 @@ import { ControlChart } from "@/components/charts/control-chart";
 import { descriptiveStats } from "@/lib/analytics/stats";
 import { calcCpk } from "@/lib/analytics/cpk";
 import { detectAnomalies } from "@/lib/analytics/anomaly";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Download, Info } from "lucide-react";
+import { ArrowLeft, Trash2, Download, Info, Loader2 } from "lucide-react";
+import { generateReport } from "@/lib/report/generate-pdf";
 import Link from "next/link";
 import type { SpecPoint, Anomaly } from "@/lib/types";
 
@@ -44,6 +45,8 @@ export default function SizeDashboardPage() {
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
   const [lengthData, setLengthData] = useState<{ sampleNo: number; value: number }[]>([]);
   const [orgId, setOrgId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   async function loadData() {
     // 사이즈 정보
@@ -238,11 +241,32 @@ export default function SizeDashboardPage() {
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto print:hidden"
-            onClick={() => window.print()}
+            className="ml-auto"
+            disabled={exporting}
+            onClick={async () => {
+              if (!reportRef.current) return;
+              setExporting(true);
+              try {
+                const batch = batches.find((b) => b.id === batchId);
+                await generateReport(reportRef.current, {
+                  productName,
+                  sizeName,
+                  batchDate: batch
+                    ? new Date(batch.created_at).toLocaleDateString("ko-KR")
+                    : "",
+                  sampleCount: batch?.row_count ?? 0,
+                });
+              } finally {
+                setExporting(false);
+              }
+            }}
           >
-            <Download className="h-4 w-4 mr-1" />
-            PDF 내보내기
+            {exporting ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4 mr-1" />
+            )}
+            {exporting ? "생성 중..." : "PDF 보고서"}
           </Button>
         )}
       </div>
@@ -277,7 +301,7 @@ export default function SizeDashboardPage() {
           </CardContent>
         </Card>
       ) : (
-        <>
+        <div ref={reportRef}>
           {/* KPI 카드 */}
           <div className={`grid gap-4 ${hasSpec ? "md:grid-cols-5" : "md:grid-cols-4"}`}>
             <KpiCard label="D0 평균" value={d0?.mean} unit="mm" />
@@ -466,7 +490,7 @@ export default function SizeDashboardPage() {
               </div>
             </CardContent>
           </Card>
-        </>
+        </div>
       )}
     </div>
   );
