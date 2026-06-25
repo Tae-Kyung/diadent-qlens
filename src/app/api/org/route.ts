@@ -15,34 +15,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Organization name is required" }, { status: 400 });
   }
 
-  const admin = createAdminClient();
-
-  // 1. 조직 생성
-  const { data: org, error: orgError } = await admin
-    .from("diadent_organizations")
-    .insert({ name: name.trim() })
-    .select("id")
-    .single();
-
-  if (orgError || !org) {
-    return NextResponse.json({ error: orgError?.message || "Failed to create org" }, { status: 500 });
+  let admin;
+  try {
+    admin = createAdminClient();
+  } catch (e: any) {
+    return NextResponse.json({ error: "Admin client error: " + e.message }, { status: 500 });
   }
 
-  // 2. 멤버십 생성 (owner)
-  const { error: memberError } = await admin
-    .from("diadent_memberships")
-    .insert({ org_id: org.id, user_id: user.id, role: "owner" });
+  // admin.rpc로 트리거 충돌 없이 조직 + 멤버십 + 프로필을 한번에 생성
+  const { data: org, error: orgError } = await admin.rpc("create_org_for_user", {
+    org_name: name.trim(),
+    p_user_id: user.id,
+  });
 
-  if (memberError) {
-    // rollback org
-    await admin.from("diadent_organizations").delete().eq("id", org.id);
-    return NextResponse.json({ error: memberError.message }, { status: 500 });
+  if (orgError) {
+    console.error("create_org_for_user error:", orgError);
+    return NextResponse.json({ error: orgError.message }, { status: 500 });
   }
 
-  // 3. 프로필에 default_org_id 설정
-  await admin
-    .from("diadent_profiles")
-    .upsert({ id: user.id, default_org_id: org.id }, { onConflict: "id" });
-
-  return NextResponse.json({ id: org.id });
+  return NextResponse.json({ id: org });
 }
