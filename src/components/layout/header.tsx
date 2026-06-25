@@ -10,15 +10,16 @@ import {
   User,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useI18n } from "@/lib/i18n/context";
 
-const mobileNav = [
-  { href: "/dashboard", label: "홈", icon: LayoutDashboard },
-  { href: "/upload", label: "업로드", icon: Upload },
-  { href: "/ai", label: "AI", icon: MessageSquare },
-  { href: "/settings", label: "프로필", icon: User },
+const mobileNavItems = [
+  { href: "/dashboard", key: "home" as const, icon: LayoutDashboard },
+  { href: "/upload", key: "upload" as const, icon: Upload },
+  { href: "/ai", key: "ai" as const, icon: MessageSquare },
+  { href: "/settings", key: "profile" as const, icon: User },
 ];
 
-const desktopNav = [
+const desktopNavItems = [
   { href: "/dashboard", label: "DASHBOARD" },
   { href: "/upload", label: "UPLOAD" },
   { href: "/products", label: "PRODUCTS" },
@@ -27,10 +28,10 @@ const desktopNav = [
 
 export function Header() {
   const pathname = usePathname();
+  const { t } = useI18n();
 
   return (
     <>
-      {/* Top App Bar */}
       <header className="fixed top-0 w-full z-50 bg-card border-b border-surface-border">
         <div className="flex justify-between items-center h-16 px-6 max-w-[1440px] mx-auto">
           <div className="flex items-center gap-4">
@@ -46,7 +47,7 @@ export function Header() {
 
           <div className="flex items-center gap-6">
             <nav className="hidden xl:flex items-center gap-8 h-full">
-              {desktopNav.map(({ href, label }) => {
+              {desktopNavItems.map(({ href, label }) => {
                 const isActive = pathname.startsWith(href);
                 return (
                   <Link
@@ -73,16 +74,15 @@ export function Header() {
                 QL
               </div>
               <span className="text-sm font-semibold text-foreground hidden sm:block">
-                관리자
+                {t.nav.admin}
               </span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Bottom Nav Bar (Mobile Only) */}
       <nav className="fixed bottom-0 left-0 w-full flex justify-around items-center h-16 xl:hidden bg-card border-t border-surface-border z-50">
-        {mobileNav.map(({ href, label, icon: Icon }) => {
+        {mobileNavItems.map(({ href, key, icon: Icon }) => {
           const isActive = pathname.startsWith(href);
           return (
             <Link
@@ -96,7 +96,7 @@ export function Header() {
               )}
             >
               <Icon className="h-5 w-5" />
-              <span className="text-[10px] font-mono">{label}</span>
+              <span className="text-[10px] font-mono">{t.nav[key]}</span>
             </Link>
           );
         })}

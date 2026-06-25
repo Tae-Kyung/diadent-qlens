@@ -2,6 +2,9 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
+import { useI18n } from "@/lib/i18n/context";
+import { LOCALES } from "@/lib/i18n/types";
+import type { Locale } from "@/lib/i18n/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -18,6 +21,7 @@ import {
 export default function SettingsPage() {
   const supabase = createClient();
   const router = useRouter();
+  const { t, locale, setLocale } = useI18n();
   const [email, setEmail] = useState("");
   const [orgName, setOrgName] = useState("");
 
@@ -56,10 +60,10 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="font-heading text-3xl font-bold text-foreground tracking-tight">
-          프로필 & 설정
+          {t.settings.title}
         </h1>
         <p className="text-muted-foreground mt-1">
-          사용자 정보 및 시스템 환경을 관리합니다.
+          {t.settings.subtitle}
         </p>
       </div>
 
@@ -78,14 +82,14 @@ export default function SettingsPage() {
                     DiaDent QLens
                   </h2>
                   <p className="font-mono text-xs text-teal-action">
-                    Quality Analysis System
+                    {t.settings.qualitySystem}
                   </p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                   <div className="space-y-1">
                     <label className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                       <Mail className="h-3 w-3" />
-                      이메일
+                      {t.settings.email}
                     </label>
                     <p className="font-mono text-xs text-foreground">
                       {email || "-"}
@@ -94,7 +98,7 @@ export default function SettingsPage() {
                   <div className="space-y-1">
                     <label className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                       <Building2 className="h-3 w-3" />
-                      조직
+                      {t.settings.org}
                     </label>
                     <p className="font-mono text-xs text-foreground">
                       {orgName || "-"}
@@ -113,17 +117,17 @@ export default function SettingsPage() {
               <div className="flex justify-between items-start mb-3">
                 <Shield className="h-8 w-8 text-clinical-blue" />
                 <span className="font-mono text-[10px] font-bold text-teal-action bg-teal-action/10 px-2 py-1 rounded">
-                  STABLE
+                  {t.settings.stable}
                 </span>
               </div>
-              <h3 className="font-heading text-base font-semibold">버전 정보</h3>
+              <h3 className="font-heading text-base font-semibold">{t.settings.versionInfo}</h3>
               <p className="font-mono text-xs text-muted-foreground mt-1">
                 DiaDent QLens
               </p>
             </div>
             <div className="mt-6 space-y-2">
               <div className="flex justify-between font-mono text-xs">
-                <span className="text-muted-foreground">Current Build</span>
+                <span className="text-muted-foreground">{t.settings.currentBuild}</span>
                 <span className="font-bold text-clinical-blue">v0.1.0</span>
               </div>
             </div>
@@ -137,30 +141,47 @@ export default function SettingsPage() {
         <Card className="border-surface-border overflow-hidden">
           <div className="p-4 border-b border-surface-border bg-card flex items-center gap-2">
             <SettingsIcon className="h-5 w-5 text-clinical-blue" />
-            <h3 className="font-heading text-base font-semibold">환경 설정</h3>
+            <h3 className="font-heading text-base font-semibold">{t.settings.preferences}</h3>
           </div>
           <CardContent className="p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold">조직 관리</p>
+                <p className="text-sm font-semibold">{t.settings.orgManagement}</p>
                 <p className="font-mono text-[10px] text-muted-foreground">
-                  멤버 관리 및 조직 설정
+                  {t.settings.orgManagementDesc}
                 </p>
               </div>
               <span className="font-mono text-[10px] text-muted-foreground bg-secondary px-2 py-1 rounded">
-                Coming Soon
+                {t.settings.comingSoon}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold">데이터 백업</p>
+                <p className="text-sm font-semibold">{t.settings.dataBackup}</p>
                 <p className="font-mono text-[10px] text-muted-foreground">
-                  분석 결과 및 원본 데이터 내보내기
+                  {t.settings.dataBackupDesc}
                 </p>
               </div>
               <span className="font-mono text-[10px] text-muted-foreground bg-secondary px-2 py-1 rounded">
-                Coming Soon
+                {t.settings.comingSoon}
               </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-semibold">{t.settings.language}</p>
+                <p className="font-mono text-[10px] text-muted-foreground">
+                  {t.settings.languageDesc}
+                </p>
+              </div>
+              <select
+                value={locale}
+                onChange={(e) => setLocale(e.target.value as Locale)}
+                className="bg-card border border-surface-border font-mono text-xs px-3 py-2 rounded-lg focus:border-clinical-blue focus:ring-1 focus:ring-clinical-blue outline-none transition-all"
+              >
+                {LOCALES.map((l) => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
             </div>
           </CardContent>
         </Card>
@@ -169,18 +190,18 @@ export default function SettingsPage() {
         <Card className="border-surface-border overflow-hidden">
           <div className="p-4 border-b border-surface-border bg-card flex items-center gap-2">
             <HelpCircle className="h-5 w-5 text-clinical-blue" />
-            <h3 className="font-heading text-base font-semibold">지원 및 보안</h3>
+            <h3 className="font-heading text-base font-semibold">{t.settings.support}</h3>
           </div>
           <div className="divide-y divide-surface-border">
             <SettingsLink
               icon={<HelpCircle className="h-5 w-5" />}
-              title="도움말"
-              subtitle="사용 가이드 및 FAQ"
+              title={t.settings.help}
+              subtitle={t.settings.helpDesc}
             />
             <SettingsLink
               icon={<Shield className="h-5 w-5" />}
-              title="개인정보 보호"
-              subtitle="데이터 처리 및 보안 정책"
+              title={t.settings.privacy}
+              subtitle={t.settings.privacyDesc}
             />
             <button
               onClick={handleLogout}
@@ -191,9 +212,9 @@ export default function SettingsPage() {
                   <LogOut className="h-5 w-5" />
                 </div>
                 <div className="text-left">
-                  <p className="text-sm font-semibold text-destructive">로그아웃</p>
+                  <p className="text-sm font-semibold text-destructive">{t.settings.logoutBtn}</p>
                   <p className="font-mono text-[10px] text-muted-foreground">
-                    현재 세션을 종료합니다
+                    {t.settings.logoutDesc}
                   </p>
                 </div>
               </div>

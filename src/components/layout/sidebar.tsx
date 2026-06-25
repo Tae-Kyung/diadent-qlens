@@ -13,18 +13,20 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/lib/i18n/context";
 
-const nav = [
-  { href: "/dashboard", label: "대시보드", icon: LayoutDashboard },
-  { href: "/products", label: "제품 관리", icon: Package },
-  { href: "/upload", label: "데이터 업로드", icon: Upload },
-  { href: "/ai", label: "AI 분석가", icon: MessageSquare },
-  { href: "/settings", label: "설정", icon: Settings },
+const navItems = [
+  { href: "/dashboard", key: "dashboard" as const, icon: LayoutDashboard },
+  { href: "/products", key: "products" as const, icon: Package },
+  { href: "/upload", key: "upload" as const, icon: Upload },
+  { href: "/ai", key: "ai" as const, icon: MessageSquare },
+  { href: "/settings", key: "settings" as const, icon: Settings },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useI18n();
 
   async function handleLogout() {
     const supabase = createClient();
@@ -44,7 +46,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 flex flex-col gap-1">
-        {nav.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, key, icon: Icon }) => {
           const isActive = pathname.startsWith(href);
           return (
             <Link
@@ -58,7 +60,7 @@ export function Sidebar() {
               )}
             >
               <Icon className="h-5 w-5" />
-              <span>{label}</span>
+              <span>{t.nav[key]}</span>
             </Link>
           );
         })}
@@ -70,7 +72,7 @@ export function Sidebar() {
           className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-sm text-muted-foreground hover:bg-accent hover:text-destructive transition-all"
         >
           <LogOut className="h-5 w-5" />
-          로그아웃
+          {t.nav.logout}
         </button>
       </div>
     </aside>

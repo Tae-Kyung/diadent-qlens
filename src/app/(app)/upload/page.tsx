@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/lib/i18n/context";
 import { Upload, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
 
 interface SheetPreview {
@@ -18,6 +19,7 @@ interface SheetPreview {
 export default function UploadPage() {
   const supabase = createClient();
   const router = useRouter();
+  const { t } = useI18n();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [orgId, setOrgId] = useState<string | null>(null);
@@ -77,7 +79,7 @@ export default function UploadPage() {
   async function handleAutoUpload() {
     if (!file) return;
     if (!orgId) {
-      setError("소속 조직 정보를 불러올 수 없습니다. 페이지를 새로고침하거나 관리자에게 문의하세요.");
+      setError(t.upload.noOrg);
       return;
     }
     setUploading(true);
@@ -94,7 +96,7 @@ export default function UploadPage() {
     if (data.success) {
       setResult(data);
     } else {
-      setError(data.error || "업로드 실패");
+      setError(data.error || t.upload.uploadFailed);
     }
     setUploading(false);
   }
@@ -105,10 +107,10 @@ export default function UploadPage() {
     <div className="space-y-8">
       <div>
         <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
-          데이터 업로드
+          {t.upload.title}
         </h2>
         <p className="text-muted-foreground mt-1">
-          Excel 파일에서 측정 데이터를 자동으로 분석 및 저장합니다.
+          {t.upload.subtitle}
         </p>
       </div>
 
@@ -133,14 +135,13 @@ export default function UploadPage() {
               className="border-clinical-blue text-clinical-blue hover:bg-clinical-blue hover:text-white transition-all"
             >
               <Upload className="h-5 w-5 mr-2" />
-              Excel 파일 선택 (.xlsx)
+              {t.upload.selectFile}
             </Button>
             {file && (
               <p className="text-sm font-mono text-clinical-blue">{file.name}</p>
             )}
             <p className="text-xs text-muted-foreground text-center max-w-md">
-              파일에서 제품명·사이즈·측정 포인트를 자동으로 인식합니다.
-              제품이 처음이면 자동 등록됩니다.
+              {t.upload.autoDetect}
             </p>
           </div>
         </CardContent>
@@ -152,17 +153,17 @@ export default function UploadPage() {
           <CardHeader className="border-b border-surface-border">
             <CardTitle className="font-heading text-lg text-clinical-blue flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-diagnostic-yellow" />
-              파일 분석 결과
+              {t.upload.analysisResult}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-5 pt-5">
             <div className="rounded-xl bg-secondary p-4 text-sm space-y-1">
-              <p><strong className="text-clinical-blue">제품:</strong> {previews[0]?.productName}</p>
-              <p><strong className="text-clinical-blue">사이즈:</strong> {previews.map((p) => p.sizeName).join(", ")} ({previews.length}개)</p>
-              <p><strong className="text-clinical-blue">총 샘플:</strong> {totalSamples}개</p>
-              <p><strong className="text-clinical-blue">포인트:</strong> {previews[0]?.pointCount}개/샘플</p>
+              <p><strong className="text-clinical-blue">{t.upload.product}:</strong> {previews[0]?.productName}</p>
+              <p><strong className="text-clinical-blue">{t.upload.size}:</strong> {previews.map((p) => p.sizeName).join(", ")} ({previews.length}개)</p>
+              <p><strong className="text-clinical-blue">{t.upload.totalSamples}:</strong> {totalSamples}개</p>
+              <p><strong className="text-clinical-blue">{t.upload.points}:</strong> {previews[0]?.pointCount}개/샘플</p>
               {previews[0]?.instrument && (
-                <p><strong className="text-clinical-blue">장비:</strong> {previews[0].instrument}</p>
+                <p><strong className="text-clinical-blue">{t.upload.equipment}:</strong> {previews[0].instrument}</p>
               )}
             </div>
 
@@ -170,9 +171,9 @@ export default function UploadPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-surface-border">
-                    <th className="pb-3 pr-4 text-left font-mono text-xs text-muted-foreground uppercase tracking-wider">사이즈</th>
-                    <th className="pb-3 pr-4 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">샘플 수</th>
-                    <th className="pb-3 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">포인트</th>
+                    <th className="pb-3 pr-4 text-left font-mono text-xs text-muted-foreground uppercase tracking-wider">{t.upload.size}</th>
+                    <th className="pb-3 pr-4 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">{t.upload.sampleCount}</th>
+                    <th className="pb-3 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">{t.upload.points}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +195,7 @@ export default function UploadPage() {
                 size="lg"
                 className="bg-clinical-blue hover:brightness-110 text-white"
               >
-                {uploading ? "처리 중..." : `업로드 (${totalSamples}개 샘플)`}
+                {uploading ? t.upload.processing : t.upload.uploadBtn.replace("{count}", String(totalSamples))}
               </Button>
             </div>
           </CardContent>
@@ -207,13 +208,13 @@ export default function UploadPage() {
           <CardContent className="py-6 space-y-3">
             <div className="flex items-center gap-2 text-teal-action">
               <CheckCircle className="h-5 w-5" />
-              <span className="font-heading font-semibold">업로드 완료</span>
+              <span className="font-heading font-semibold">{t.upload.uploadComplete}</span>
             </div>
             {result.batches.map((b, i) => (
               <p key={i} className="text-sm">
-                <span className="font-mono font-semibold text-clinical-blue">#{b.sizeName}</span>: {b.rowCount}개 샘플 저장
-                {b.rejectedCount > 0 && <span className="text-muted-foreground"> ({b.rejectedCount}개 제외)</span>}
-                {b.autoCreated && <span className="text-teal-action ml-2 font-mono text-xs">NEW</span>}
+                <span className="font-mono font-semibold text-clinical-blue">#{b.sizeName}</span>: {b.rowCount}{t.upload.saved}
+                {b.rejectedCount > 0 && <span className="text-muted-foreground"> ({b.rejectedCount}{t.upload.excluded})</span>}
+                {b.autoCreated && <span className="text-teal-action ml-2 font-mono text-xs">{t.upload.newCreated}</span>}
               </p>
             ))}
             <div className="flex gap-2 pt-2">
@@ -221,7 +222,7 @@ export default function UploadPage() {
                 onClick={() => router.push("/dashboard")}
                 className="bg-clinical-blue hover:brightness-110 text-white"
               >
-                대시보드로 이동
+                {t.upload.goToDashboard}
               </Button>
               <Button
                 variant="outline"
@@ -232,7 +233,7 @@ export default function UploadPage() {
                   setResult(null);
                 }}
               >
-                추가 업로드
+                {t.upload.additionalUpload}
               </Button>
             </div>
           </CardContent>

@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function OnboardingPage() {
   const [orgName, setOrgName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { t } = useI18n();
   const supabase = createClient();
 
   async function handleCreate(e: React.FormEvent) {
@@ -21,7 +23,7 @@ export default function OnboardingPage() {
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      setError("로그인 정보를 불러올 수 없습니다.");
+      setError(t.onboarding.noAuth);
       setLoading(false);
       return;
     }
@@ -34,7 +36,7 @@ export default function OnboardingPage() {
       .single();
 
     if (insertError || !org) {
-      setError(insertError?.message || "조직 생성 실패");
+      setError(insertError?.message || t.onboarding.createFailed);
       setLoading(false);
       return;
     }
@@ -58,19 +60,19 @@ export default function OnboardingPage() {
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle>조직 생성</CardTitle>
-          <CardDescription>QLens를 시작하려면 조직을 만드세요.</CardDescription>
+          <CardTitle>{t.onboarding.title}</CardTitle>
+          <CardDescription>{t.onboarding.subtitle}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleCreate} className="space-y-4">
             <Input
-              placeholder="조직 이름 (예: 다이아덴트)"
+              placeholder={t.onboarding.orgNamePlaceholder}
               value={orgName}
               onChange={(e) => setOrgName(e.target.value)}
               required
             />
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "생성 중..." : "조직 생성"}
+              {loading ? t.onboarding.creating : t.onboarding.create}
             </Button>
             {error && <p className="text-sm text-destructive text-center">{error}</p>}
           </form>

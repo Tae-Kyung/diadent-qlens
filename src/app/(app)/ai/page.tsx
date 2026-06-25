@@ -11,20 +11,16 @@ import { calcCpk } from "@/lib/analytics/cpk";
 import type { PointStats } from "@/lib/types";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { useI18n } from "@/lib/i18n/context";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const EXAMPLE_QUESTIONS = [
-  "팁 직경(D0)이 가장 불안정한 사이즈는?",
-  "전장의 공정능력은 어떤 수준인가요?",
-  "이상치가 가장 많은 포인트는?",
-  "전체적인 품질 수준을 평가해주세요.",
-];
-
 export default function AiPage() {
+  const { t } = useI18n();
+  const exampleQuestions = [t.ai.q1, t.ai.q2, t.ai.q3, t.ai.q4];
   const supabase = createClient();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -54,7 +50,7 @@ export default function AiPage() {
       .limit(5);
 
     if (!batches || batches.length === 0) {
-      setContext("현재 분석할 데이터가 없습니다.");
+      setContext(t.ai.noDataContext);
       return;
     }
 
@@ -179,7 +175,7 @@ export default function AiPage() {
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "네트워크 오류가 발생했습니다." },
+        { role: "assistant", content: t.ai.networkError },
       ]);
     }
     setLoading(false);
@@ -189,10 +185,10 @@ export default function AiPage() {
     <div className="flex h-[calc(100vh-8rem)] flex-col">
       <div className="mb-4">
         <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
-          AI 분석가
+          {t.ai.title}
         </h2>
         <p className="text-muted-foreground mt-1">
-          측정 데이터에 대해 자연어로 질문하고 인사이트를 얻으세요.
+          {t.ai.subtitle}
         </p>
       </div>
 
@@ -205,10 +201,10 @@ export default function AiPage() {
                   <Send className="h-6 w-6 text-clinical-blue" />
                 </div>
                 <p className="text-center text-muted-foreground text-sm">
-                  측정 데이터에 대해 질문해보세요.
+                  {t.ai.askAboutData}
                 </p>
                 <div className="flex flex-wrap gap-2 justify-center max-w-2xl mx-auto">
-                  {EXAMPLE_QUESTIONS.map((q, i) => (
+                  {exampleQuestions.map((q, i) => (
                     <Button
                       key={i}
                       variant="outline"
@@ -245,7 +241,7 @@ export default function AiPage() {
                 <div className="bg-secondary rounded-xl px-4 py-3 text-sm text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-clinical-blue animate-pulse" />
-                    분석 중...
+                    {t.ai.analyzing}
                   </span>
                 </div>
               </div>
@@ -263,7 +259,7 @@ export default function AiPage() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="질문을 입력하세요..."
+              placeholder={t.ai.placeholder}
               disabled={loading}
               className="border-surface-border"
             />

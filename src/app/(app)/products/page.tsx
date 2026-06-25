@@ -8,8 +8,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
 import { Package, Plus, Trash2 } from "lucide-react";
+import { useI18n } from "@/lib/i18n/context";
 
 export default function ProductsPage() {
+  const { t } = useI18n();
   const supabase = createClient();
   const [products, setProducts] = useState<Product[]>([]);
   const [name, setName] = useState("");
@@ -60,7 +62,7 @@ export default function ProductsPage() {
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("이 제품을 삭제하시겠습니까? 하위 사이즈·배치가 모두 삭제됩니다.")) return;
+    if (!confirm(t.products.deleteConfirm)) return;
     await supabase.from("diadent_products").delete().eq("id", id);
     loadProducts();
   }
@@ -69,28 +71,28 @@ export default function ProductsPage() {
     <div className="space-y-8">
       <div>
         <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
-          제품 관리
+          {t.products.title}
         </h2>
         <p className="text-muted-foreground mt-1">
-          분석 대상 제품 및 사이즈를 등록하고 관리합니다.
+          {t.products.subtitle}
         </p>
       </div>
 
       <Card className="border-surface-border overflow-hidden">
         <div className="p-4 border-b border-surface-border bg-card">
-          <h3 className="font-heading text-base font-semibold text-clinical-blue">새 제품 추가</h3>
+          <h3 className="font-heading text-base font-semibold text-clinical-blue">{t.products.addNew}</h3>
         </div>
         <CardContent className="pt-5">
           <form onSubmit={handleCreate} className="flex gap-3">
             <Input
-              placeholder="제품명 (예: Confirm Fit GP)"
+              placeholder={t.products.namePlaceholder}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               className="border-surface-border"
             />
             <Input
-              placeholder="코드 (선택)"
+              placeholder={t.products.codePlaceholder}
               value={code}
               onChange={(e) => setCode(e.target.value)}
               className="w-40 border-surface-border"
@@ -101,7 +103,7 @@ export default function ProductsPage() {
               className="bg-clinical-blue hover:brightness-110 text-white"
             >
               <Plus className="h-4 w-4 mr-1" />
-              추가
+              {t.products.add}
             </Button>
           </form>
         </CardContent>
@@ -137,7 +139,7 @@ export default function ProductsPage() {
           <Card className="border-surface-border">
             <CardContent className="py-16 text-center text-muted-foreground">
               <Package className="h-8 w-8 mx-auto mb-3 text-clinical-blue opacity-50" />
-              등록된 제품이 없습니다.
+              {t.products.noProducts}
             </CardContent>
           </Card>
         )}
