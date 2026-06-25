@@ -47,13 +47,17 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   /* DiaDent custom colors */
-  --color-clinical-blue: #005696;
-  --color-teal-action: #00A99D;
-  --color-diagnostic-yellow: #EEB004;
-  --color-surface-border: #E2E8F0;
+  --color-clinical-blue: var(--clinical-blue);
+  --color-teal-action: var(--teal-action);
+  --color-diagnostic-yellow: var(--diagnostic-yellow);
+  --color-surface-border: var(--surface-border);
 }
 
 :root {
+  --clinical-blue: #005696;
+  --teal-action: #00A99D;
+  --diagnostic-yellow: #EEB004;
+  --surface-border: #E2E8F0;
   --background: #f7f9fb;
   --foreground: #191c1e;
   --card: #ffffff;
@@ -89,6 +93,10 @@
 }
 
 .dark {
+  --clinical-blue: #6db3f0;
+  --teal-action: #59dacd;
+  --diagnostic-yellow: #fcbc1c;
+  --surface-border: rgba(255, 255, 255, 0.1);
   --background: #191c1e;
   --foreground: #eff1f3;
   --card: #2d3133;
@@ -153,7 +161,7 @@
 }
 .prose-ai strong {
   font-weight: 700;
-  color: var(--clinical-blue, #005696);
+  color: var(--clinical-blue);
 }
 .prose-ai em {
   font-style: italic;
@@ -178,7 +186,7 @@
   margin: 0.25em 0;
 }
 .prose-ai li::marker {
-  color: var(--clinical-blue, #005696);
+  color: var(--clinical-blue);
 }
 .prose-ai code {
   font-family: var(--font-geist-mono);
@@ -226,7 +234,7 @@
 .prose-ai blockquote {
   margin: 0.75em 0;
   padding: 0.5em 1em;
-  border-left: 3px solid var(--clinical-blue, #005696);
+  border-left: 3px solid var(--clinical-blue);
   background: var(--secondary);
   color: var(--muted-foreground);
 }
@@ -236,7 +244,7 @@
   margin: 1em 0;
 }
 .prose-ai a {
-  color: var(--clinical-blue, #005696);
+  color: var(--clinical-blue);
   text-decoration: underline;
 }
 

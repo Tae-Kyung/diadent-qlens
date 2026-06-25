@@ -123,7 +123,7 @@ export default function UploadPage() {
               onChange={handleFileSelect}
               className="hidden"
             />
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-clinical-blue/10 rounded-2xl flex items-center justify-center">
               <Upload className="h-8 w-8 text-clinical-blue" />
             </div>
             <Button

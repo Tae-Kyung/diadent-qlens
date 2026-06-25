@@ -201,7 +201,7 @@ export default function AiPage() {
           <div className="flex-1 overflow-auto space-y-4">
             {messages.length === 0 && (
               <div className="space-y-4 py-12">
-                <div className="w-12 h-12 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center">
+                <div className="w-12 h-12 mx-auto bg-clinical-blue/10 rounded-2xl flex items-center justify-center">
                   <Send className="h-6 w-6 text-clinical-blue" />
                 </div>
                 <p className="text-center text-muted-foreground text-sm">

@@ -97,27 +97,27 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <SummaryCard
               icon={<FlaskConical className="h-6 w-6" />}
-              iconBg="bg-blue-50 text-clinical-blue"
+              iconBg="bg-clinical-blue/10 text-clinical-blue"
               label="사이즈"
               value={sizes.length.toString()}
               detail={`${(sizes[0] as any).diadent_products?.name}`}
             />
             <SummaryCard
               icon={<Database className="h-6 w-6" />}
-              iconBg="bg-teal-50 text-teal-action"
+              iconBg="bg-teal-action/10 text-teal-action"
               label="총 배치"
               value={totalBatches.toString()}
               badge={totalBatches > 0 ? "ACTIVE" : undefined}
             />
             <SummaryCard
               icon={<BarChart3 className="h-6 w-6" />}
-              iconBg="bg-amber-50 text-diagnostic-yellow"
+              iconBg="bg-diagnostic-yellow/10 text-diagnostic-yellow"
               label="총 샘플"
               value={totalSamples.toLocaleString()}
             />
             <SummaryCard
               icon={<AlertTriangle className="h-6 w-6" />}
-              iconBg="bg-red-50 text-destructive"
+              iconBg="bg-destructive/10 text-destructive"
               label="제외된 행"
               value={totalRejected.toString()}
               detail={totalSamples > 0 ? `${((totalRejected / totalSamples) * 100).toFixed(1)}%` : undefined}

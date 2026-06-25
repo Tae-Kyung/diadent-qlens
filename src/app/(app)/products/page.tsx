@@ -126,7 +126,7 @@ export default function ProductsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleDelete(p.id)}
-                className="hover:bg-red-50"
+                className="hover:bg-destructive/10"
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>

@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
-  FileText,
   Upload,
   MessageSquare,
   User,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const mobileNav = [
   { href: "/dashboard", label: "홈", icon: LayoutDashboard },
@@ -64,6 +64,7 @@ export function Header() {
                 );
               })}
             </nav>
+            <ThemeToggle />
             <Link
               href="/settings"
               className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-full hover:bg-accent transition-colors"
