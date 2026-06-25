@@ -185,25 +185,35 @@ export default function AiPage() {
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <h1 className="text-2xl font-bold mb-4">AI 분석가</h1>
+    <div className="flex h-[calc(100vh-8rem)] flex-col">
+      <div className="mb-4">
+        <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
+          AI 분석가
+        </h2>
+        <p className="text-muted-foreground mt-1">
+          측정 데이터에 대해 자연어로 질문하고 인사이트를 얻으세요.
+        </p>
+      </div>
 
-      {/* 대화 영역 */}
-      <Card className="flex-1 overflow-hidden">
-        <CardContent className="flex h-full flex-col p-4">
+      <Card className="flex-1 overflow-hidden border-surface-border">
+        <CardContent className="flex h-full flex-col p-5">
           <div className="flex-1 overflow-auto space-y-4">
             {messages.length === 0 && (
-              <div className="space-y-3 py-8">
+              <div className="space-y-4 py-12">
+                <div className="w-12 h-12 mx-auto bg-blue-50 rounded-2xl flex items-center justify-center">
+                  <Send className="h-6 w-6 text-clinical-blue" />
+                </div>
                 <p className="text-center text-muted-foreground text-sm">
                   측정 데이터에 대해 질문해보세요.
                 </p>
-                <div className="flex flex-wrap gap-2 justify-center">
+                <div className="flex flex-wrap gap-2 justify-center max-w-2xl mx-auto">
                   {EXAMPLE_QUESTIONS.map((q, i) => (
                     <Button
                       key={i}
                       variant="outline"
                       size="sm"
                       onClick={() => handleSend(q)}
+                      className="border-surface-border text-muted-foreground hover:text-clinical-blue hover:border-clinical-blue transition-colors"
                     >
                       {q}
                     </Button>
@@ -218,10 +228,10 @@ export default function AiPage() {
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg px-4 py-2 text-sm whitespace-pre-wrap ${
+                  className={`max-w-[80%] rounded-xl px-4 py-3 text-sm whitespace-pre-wrap ${
                     m.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
+                      ? "bg-clinical-blue text-white"
+                      : "bg-secondary text-foreground"
                   }`}
                 >
                   {m.content}
@@ -231,17 +241,19 @@ export default function AiPage() {
 
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-muted rounded-lg px-4 py-2 text-sm text-muted-foreground">
-                  분석 중...
+                <div className="bg-secondary rounded-xl px-4 py-3 text-sm text-muted-foreground">
+                  <span className="inline-flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-clinical-blue animate-pulse" />
+                    분석 중...
+                  </span>
                 </div>
               </div>
             )}
             <div ref={bottomRef} />
           </div>
 
-          {/* 입력 */}
           <form
-            className="flex gap-2 pt-4 border-t mt-4"
+            className="flex gap-2 pt-4 border-t border-surface-border mt-4"
             onSubmit={(e) => {
               e.preventDefault();
               handleSend();
@@ -252,8 +264,13 @@ export default function AiPage() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="질문을 입력하세요..."
               disabled={loading}
+              className="border-surface-border"
             />
-            <Button type="submit" disabled={loading || !input.trim()}>
+            <Button
+              type="submit"
+              disabled={loading || !input.trim()}
+              className="bg-clinical-blue hover:brightness-110 text-white"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </form>

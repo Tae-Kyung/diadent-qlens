@@ -102,13 +102,20 @@ export default function UploadPage() {
   const totalSamples = previews.reduce((s, p) => s + p.sampleCount, 0);
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">데이터 업로드</h1>
+    <div className="space-y-8">
+      <div>
+        <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
+          데이터 업로드
+        </h2>
+        <p className="text-muted-foreground mt-1">
+          Excel 파일에서 측정 데이터를 자동으로 분석 및 저장합니다.
+        </p>
+      </div>
 
       {/* 파일 선택 */}
-      <Card>
-        <CardContent className="py-8">
-          <div className="flex flex-col items-center gap-4">
+      <Card className="border-surface-border">
+        <CardContent className="py-12">
+          <div className="flex flex-col items-center gap-5">
             <input
               ref={fileRef}
               type="file"
@@ -116,16 +123,20 @@ export default function UploadPage() {
               onChange={handleFileSelect}
               className="hidden"
             />
+            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center">
+              <Upload className="h-8 w-8 text-clinical-blue" />
+            </div>
             <Button
               variant="outline"
               size="lg"
               onClick={() => fileRef.current?.click()}
+              className="border-clinical-blue text-clinical-blue hover:bg-clinical-blue hover:text-white transition-all"
             >
               <Upload className="h-5 w-5 mr-2" />
               Excel 파일 선택 (.xlsx)
             </Button>
             {file && (
-              <p className="text-sm text-muted-foreground">{file.name}</p>
+              <p className="text-sm font-mono text-clinical-blue">{file.name}</p>
             )}
             <p className="text-xs text-muted-foreground text-center max-w-md">
               파일에서 제품명·사이즈·측정 포인트를 자동으로 인식합니다.
@@ -137,45 +148,52 @@ export default function UploadPage() {
 
       {/* 프리뷰 */}
       {previews.length > 0 && !result && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-blue-500" />
+        <Card className="border-surface-border overflow-hidden">
+          <CardHeader className="border-b border-surface-border">
+            <CardTitle className="font-heading text-lg text-clinical-blue flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-diagnostic-yellow" />
               파일 분석 결과
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg bg-muted p-3 text-sm">
-              <p><strong>제품:</strong> {previews[0]?.productName}</p>
-              <p><strong>사이즈:</strong> {previews.map((p) => p.sizeName).join(", ")} ({previews.length}개)</p>
-              <p><strong>총 샘플:</strong> {totalSamples}개</p>
-              <p><strong>포인트:</strong> {previews[0]?.pointCount}개/샘플</p>
+          <CardContent className="space-y-5 pt-5">
+            <div className="rounded-xl bg-secondary p-4 text-sm space-y-1">
+              <p><strong className="text-clinical-blue">제품:</strong> {previews[0]?.productName}</p>
+              <p><strong className="text-clinical-blue">사이즈:</strong> {previews.map((p) => p.sizeName).join(", ")} ({previews.length}개)</p>
+              <p><strong className="text-clinical-blue">총 샘플:</strong> {totalSamples}개</p>
+              <p><strong className="text-clinical-blue">포인트:</strong> {previews[0]?.pointCount}개/샘플</p>
               {previews[0]?.instrument && (
-                <p><strong>장비:</strong> {previews[0].instrument}</p>
+                <p><strong className="text-clinical-blue">장비:</strong> {previews[0].instrument}</p>
               )}
             </div>
 
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left">
-                  <th className="pb-2 pr-4">사이즈</th>
-                  <th className="pb-2 pr-4 text-right">샘플 수</th>
-                  <th className="pb-2 text-right">포인트</th>
-                </tr>
-              </thead>
-              <tbody>
-                {previews.map((p, i) => (
-                  <tr key={i} className="border-b">
-                    <td className="py-2 pr-4 font-mono font-medium">#{p.sizeName}</td>
-                    <td className="py-2 pr-4 text-right">{p.sampleCount}개</td>
-                    <td className="py-2 text-right">{p.pointCount}개</td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-surface-border">
+                    <th className="pb-3 pr-4 text-left font-mono text-xs text-muted-foreground uppercase tracking-wider">사이즈</th>
+                    <th className="pb-3 pr-4 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">샘플 수</th>
+                    <th className="pb-3 text-right font-mono text-xs text-muted-foreground uppercase tracking-wider">포인트</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {previews.map((p, i) => (
+                    <tr key={i} className="border-b border-surface-border">
+                      <td className="py-3 pr-4 font-mono font-semibold text-clinical-blue">#{p.sizeName}</td>
+                      <td className="py-3 pr-4 text-right font-mono">{p.sampleCount}개</td>
+                      <td className="py-3 text-right font-mono">{p.pointCount}개</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div className="flex justify-end">
-              <Button onClick={handleAutoUpload} disabled={uploading} size="lg">
+              <Button
+                onClick={handleAutoUpload}
+                disabled={uploading}
+                size="lg"
+                className="bg-clinical-blue hover:brightness-110 text-white"
+              >
                 {uploading ? "처리 중..." : `업로드 (${totalSamples}개 샘플)`}
               </Button>
             </div>
@@ -185,25 +203,29 @@ export default function UploadPage() {
 
       {/* 결과 */}
       {result && (
-        <Card>
+        <Card className="border-surface-border border-teal-action/30">
           <CardContent className="py-6 space-y-3">
-            <div className="flex items-center gap-2 text-green-600">
+            <div className="flex items-center gap-2 text-teal-action">
               <CheckCircle className="h-5 w-5" />
-              <span className="font-medium">업로드 완료</span>
+              <span className="font-heading font-semibold">업로드 완료</span>
             </div>
             {result.batches.map((b, i) => (
               <p key={i} className="text-sm">
-                <span className="font-mono font-medium">#{b.sizeName}</span>: {b.rowCount}개 샘플 저장
+                <span className="font-mono font-semibold text-clinical-blue">#{b.sizeName}</span>: {b.rowCount}개 샘플 저장
                 {b.rejectedCount > 0 && <span className="text-muted-foreground"> ({b.rejectedCount}개 제외)</span>}
-                {b.autoCreated && <span className="text-blue-500 ml-2">새로 생성됨</span>}
+                {b.autoCreated && <span className="text-teal-action ml-2 font-mono text-xs">NEW</span>}
               </p>
             ))}
             <div className="flex gap-2 pt-2">
-              <Button onClick={() => router.push("/dashboard")}>
+              <Button
+                onClick={() => router.push("/dashboard")}
+                className="bg-clinical-blue hover:brightness-110 text-white"
+              >
                 대시보드로 이동
               </Button>
               <Button
                 variant="outline"
+                className="border-surface-border"
                 onClick={() => {
                   setFile(null);
                   setPreviews([]);
@@ -218,7 +240,7 @@ export default function UploadPage() {
       )}
 
       {error && (
-        <Card>
+        <Card className="border-destructive/30">
           <CardContent className="py-4">
             <div className="flex items-center gap-2 text-destructive">
               <AlertCircle className="h-5 w-5" />

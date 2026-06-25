@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/types";
-import { Plus, Trash2 } from "lucide-react";
+import { Package, Plus, Trash2 } from "lucide-react";
 
 export default function ProductsPage() {
   const supabase = createClient();
@@ -66,28 +66,40 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">제품 관리</h1>
+    <div className="space-y-8">
+      <div>
+        <h2 className="font-heading text-3xl font-bold text-foreground tracking-tight">
+          제품 관리
+        </h2>
+        <p className="text-muted-foreground mt-1">
+          분석 대상 제품 및 사이즈를 등록하고 관리합니다.
+        </p>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">새 제품 추가</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="border-surface-border overflow-hidden">
+        <div className="p-4 border-b border-surface-border bg-card">
+          <h3 className="font-heading text-base font-semibold text-clinical-blue">새 제품 추가</h3>
+        </div>
+        <CardContent className="pt-5">
           <form onSubmit={handleCreate} className="flex gap-3">
             <Input
               placeholder="제품명 (예: Confirm Fit GP)"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
+              className="border-surface-border"
             />
             <Input
               placeholder="코드 (선택)"
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              className="w-40"
+              className="w-40 border-surface-border"
             />
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-clinical-blue hover:brightness-110 text-white"
+            >
               <Plus className="h-4 w-4 mr-1" />
               추가
             </Button>
@@ -95,17 +107,17 @@ export default function ProductsPage() {
         </CardContent>
       </Card>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {products.map((p) => (
-          <Card key={p.id}>
-            <CardContent className="flex items-center justify-between py-4">
+          <Card key={p.id} className="border-surface-border hover:clinical-shadow transition-all">
+            <CardContent className="flex items-center justify-between py-4 px-6">
               <Link
                 href={`/products/${p.id}`}
-                className="font-medium hover:underline"
+                className="font-heading font-semibold text-clinical-blue hover:underline"
               >
                 {p.name}
                 {p.code && (
-                  <span className="ml-2 text-sm text-muted-foreground">
+                  <span className="ml-2 font-mono text-xs text-muted-foreground">
                     ({p.code})
                   </span>
                 )}
@@ -114,6 +126,7 @@ export default function ProductsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleDelete(p.id)}
+                className="hover:bg-red-50"
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
@@ -121,9 +134,12 @@ export default function ProductsPage() {
           </Card>
         ))}
         {products.length === 0 && (
-          <p className="text-center text-muted-foreground py-8">
-            등록된 제품이 없습니다.
-          </p>
+          <Card className="border-surface-border">
+            <CardContent className="py-16 text-center text-muted-foreground">
+              <Package className="h-8 w-8 mx-auto mb-3 text-clinical-blue opacity-50" />
+              등록된 제품이 없습니다.
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

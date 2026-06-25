@@ -231,17 +231,20 @@ export default function SizeDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")}>
+        <Button variant="ghost" size="sm" onClick={() => router.push("/dashboard")} className="hover:bg-secondary">
           <ArrowLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold">
-          {productName} #{sizeName}
-        </h1>
+        <div>
+          <h2 className="font-heading text-2xl font-bold text-foreground tracking-tight">
+            {productName} #{sizeName}
+          </h2>
+          <p className="text-xs text-muted-foreground font-mono">Dimensional Analysis Report</p>
+        </div>
         {analysis.length > 0 && (
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto"
+            className="ml-auto border-clinical-blue text-clinical-blue hover:bg-clinical-blue hover:text-white"
             disabled={exporting}
             onClick={async () => {
               if (!reportRef.current) return;
@@ -512,16 +515,16 @@ function KpiCard({
   const colorClass = warn && value != null && value < 1.33
     ? "text-destructive"
     : good && value != null && value >= 95
-      ? "text-green-600"
+      ? "text-teal-action"
       : good && value != null && value < 95
-        ? "text-amber-600"
-        : "";
+        ? "text-diagnostic-yellow"
+        : "text-clinical-blue";
 
   return (
-    <Card>
-      <CardContent className="py-4">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className={`text-2xl font-bold font-mono ${colorClass}`}>
+    <Card className="border-surface-border hover:clinical-shadow transition-all">
+      <CardContent className="py-5 px-5">
+        <p className="font-mono text-[10px] text-muted-foreground uppercase tracking-wider">{label}</p>
+        <p className={`text-2xl font-bold font-mono mt-1 ${colorClass}`}>
           {value != null ? (unit === "%" ? value.toFixed(1) : value.toFixed(4)) : "-"}
           {unit && value != null && (
             <span className="text-sm font-normal text-muted-foreground ml-1">
