@@ -35,14 +35,25 @@ export default function LoginPage() {
         router.push("/onboarding");
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       if (error) {
         setError(error.message);
       } else {
-        router.push("/onboarding");
+        // 조직이 있으면 대시보드로, 없으면 온보딩으로
+        const { data: profile } = await supabase
+          .from("diadent_profiles")
+          .select("default_org_id")
+          .eq("id", data.user.id)
+          .single();
+
+        if (profile?.default_org_id) {
+          router.push("/dashboard");
+        } else {
+          router.push("/onboarding");
+        }
       }
     }
 
