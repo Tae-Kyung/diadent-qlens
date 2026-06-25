@@ -14,7 +14,7 @@ const fr = {
     title: "Clinical Overview",
     subtitle: "Analyse qualité et surveillance des données en temps réel.",
     newUpload: "Télécharger des données",
-    noProducts: "Aucun produit enregistré.",
+    noProducts: "Pas encore de données. Téléchargez un fichier Excel pour commencer.",
     registerFirst: "Enregistrez d'abord un produit →",
     sizes: "Tailles",
     totalBatches: "Total lots",

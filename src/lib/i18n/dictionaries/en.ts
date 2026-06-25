@@ -14,7 +14,7 @@ const en = {
     title: "Clinical Overview",
     subtitle: "Real-time quality analysis and data monitoring.",
     newUpload: "Upload New Data",
-    noProducts: "No products registered.",
+    noProducts: "No data yet. Upload an Excel file to get started.",
     registerFirst: "Register a product first →",
     sizes: "Sizes",
     totalBatches: "Total Batches",

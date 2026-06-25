@@ -14,7 +14,7 @@ const zh = {
     title: "Clinical Overview",
     subtitle: "实时质量分析与数据监控",
     newUpload: "上传新数据",
-    noProducts: "暂无注册产品。",
+    noProducts: "暂无数据。请上传 Excel 文件开始分析。",
     registerFirst: "请先注册产品 →",
     sizes: "规格",
     totalBatches: "总批次",

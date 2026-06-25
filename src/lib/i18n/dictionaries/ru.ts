@@ -14,7 +14,7 @@ const ru = {
     title: "Clinical Overview",
     subtitle: "Анализ качества и мониторинг данных в реальном времени.",
     newUpload: "Загрузить данные",
-    noProducts: "Продукция не зарегистрирована.",
+    noProducts: "Данных пока нет. Загрузите файл Excel для начала.",
     registerFirst: "Сначала зарегистрируйте продукт →",
     sizes: "Размеры",
     totalBatches: "Всего партий",

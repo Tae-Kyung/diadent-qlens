@@ -43,8 +43,12 @@ export function DashboardContent({ sizes, sizeStats, totalBatches, totalSamples,
               <FlaskConical className="h-8 w-8 text-clinical-blue" />
             </div>
             <p className="text-muted-foreground mb-2">{t.dashboard.noProducts}</p>
-            <Link href="/products" className="text-clinical-blue font-semibold hover:underline">
-              {t.dashboard.registerFirst}
+            <Link
+              href="/upload"
+              className="inline-flex items-center gap-2 mt-2 bg-clinical-blue text-white px-6 py-3 rounded-lg font-heading font-semibold text-sm clinical-shadow hover:brightness-110 active:scale-95 transition-all"
+            >
+              <Upload className="h-4 w-4" />
+              {t.dashboard.newUpload}
             </Link>
           </CardContent>
         </Card>

@@ -16,7 +16,7 @@ const ko = {
     title: "Clinical Overview",
     subtitle: "실시간 품질 분석 및 데이터 모니터링",
     newUpload: "새 데이터 업로드",
-    noProducts: "등록된 제품이 없습니다.",
+    noProducts: "아직 데이터가 없습니다. Excel 파일을 업로드해보세요.",
     registerFirst: "제품을 먼저 등록하세요 →",
     sizes: "사이즈",
     totalBatches: "총 배치",
