@@ -10,6 +10,7 @@ import { descriptiveStats } from "@/lib/analytics/stats";
 import { calcCpk } from "@/lib/analytics/cpk";
 import type { PointStats } from "@/lib/types";
 import { Send } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -227,15 +228,15 @@ export default function AiPage() {
                 key={i}
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`max-w-[80%] rounded-xl px-4 py-3 text-sm whitespace-pre-wrap ${
-                    m.role === "user"
-                      ? "bg-clinical-blue text-white"
-                      : "bg-secondary text-foreground"
-                  }`}
-                >
-                  {m.content}
-                </div>
+                {m.role === "user" ? (
+                  <div className="max-w-[80%] rounded-xl px-4 py-3 text-sm whitespace-pre-wrap bg-clinical-blue text-white">
+                    {m.content}
+                  </div>
+                ) : (
+                  <div className="max-w-[80%] rounded-xl px-5 py-4 text-sm bg-secondary text-foreground prose-ai">
+                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             ))}
 
