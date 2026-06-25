@@ -11,6 +11,7 @@ import { calcCpk } from "@/lib/analytics/cpk";
 import type { PointStats } from "@/lib/types";
 import { Send } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useI18n } from "@/lib/i18n/context";
 
 interface Message {
@@ -230,7 +231,7 @@ export default function AiPage() {
                   </div>
                 ) : (
                   <div className="max-w-[80%] rounded-xl px-5 py-4 text-sm bg-secondary text-foreground prose-ai">
-                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                   </div>
                 )}
               </div>
